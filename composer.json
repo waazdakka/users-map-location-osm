@@ -1,0 +1,24 @@
+{
+    "name": "c4c6/users-map-location-osm",
+    "description": "Display users location on OpenStreetMap. Fork of justoverclock/users-map-location.",
+    "type": "flarum-extension",
+    "license": "MIT",
+    "require": {
+        "flarum/core": ">=1.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "C4c6\\UsersMapLocationOsm\\": "src/"
+        }
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "Users Map Location (OSM)",
+            "icon": {
+                "name": "fas fa-map-marked-alt",
+                "backgroundColor": "#2d8a4e",
+                "color": "#fff"
+            }
+        }
+    }
+}

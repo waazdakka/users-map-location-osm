@@ -1,0 +1,11 @@
+c4c6-users-map-location-osm:
+  forum:
+    nav_tab: Carte
+    location: Localisation
+    city_label: Votre ville
+    city_placeholder: "Ex: Paris, Lyon, Bordeaux..."
+    locationDescription: "Entrez votre ville pour l'afficher sur la carte. Utilise OpenStreetMap, sans compte requis."
+    save: Enregistrer
+    locationSaved: Localisation enregistrée !
+    no_location_self: "Vous n'avez pas encore renseigné votre ville. Utilisez le champ ci-dessus."
+    no_location_other: "Cet utilisateur n'a pas renseigné sa localisation."

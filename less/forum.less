@@ -1,0 +1,23 @@
+.StandaloneMapPage {
+    &-header {
+        padding: 20px 0 10px;
+        h2 { margin-bottom: 4px; i { margin-right: 8px; } }
+    }
+    &-map {
+        width: 100%;
+        min-height: 300px;
+    }
+}
+
+.StandaloneMapPage--full {
+    .StandaloneMapPage-header {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    .StandaloneMapPage-map {
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+    }
+}
