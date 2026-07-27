@@ -4,24 +4,38 @@ import Button from 'flarum/common/components/Button';
 
 function loadLeaflet() {
     return new Promise((resolve) => {
-        if (window.L) { resolve(); return; }
+        if (window.L && window.L.markerClusterGroup) { resolve(); return; }
+
+        const promises = [];
+
         if (!document.getElementById('leaflet-css')) {
             const link = document.createElement('link');
-            link.id = 'leaflet-css';
-            link.rel = 'stylesheet';
+            link.id = 'leaflet-css'; link.rel = 'stylesheet';
             link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
             document.head.appendChild(link);
         }
-        if (document.getElementById('leaflet-js')) {
-            if (window.L) resolve();
-            else document.getElementById('leaflet-js').addEventListener('load', resolve);
-            return;
+
+        if (!document.getElementById('leaflet-cluster-css')) {
+            const link = document.createElement('link');
+            link.id = 'leaflet-cluster-css'; link.rel = 'stylesheet';
+            link.href = 'https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css';
+            document.head.appendChild(link);
         }
-        const script = document.createElement('script');
-        script.id = 'leaflet-js';
-        script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-        script.onload = resolve;
-        document.head.appendChild(script);
+
+        const loadScript = (id, src) => new Promise((res) => {
+            if (document.getElementById(id)) { res(); return; }
+            const script = document.createElement('script');
+            script.id = id; script.src = src;
+            script.onload = res;
+            document.head.appendChild(script);
+        });
+
+        Promise.all([
+            loadScript('leaflet-js', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'),
+        ]).then(() => {
+            loadScript('leaflet-cluster-js', 'https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js')
+                .then(resolve);
+        });
     });
 }
 
@@ -168,10 +182,11 @@ export default class LocationSettings extends Component {
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                 maxZoom: 19,
-		referrerPolicy: 'strict-origin-when-cross-origin',
+                referrerPolicy: 'strict-origin-when-cross-origin',
             }).addTo(this.globalMapInstance);
             const iconUrl = app.forum.attribute('baseUrl') + '/assets/extensions/c4c6-users-map-location-osm/marker-icon.png';
             const icon = L.icon({ iconUrl, iconSize: [28, 45], iconAnchor: [14, 45] });
+            const cluster = L.markerClusterGroup();
             const bounds = [];
             this.globalUsers.forEach(user => {
                 const lat = user.lat;
@@ -181,11 +196,10 @@ export default class LocationSettings extends Component {
                     <strong><a href="${app.forum.attribute('baseUrl')}/u/${user.username}">${user.name}</a></strong><br/>
                     <small>${user.location}</small>
                 </div>`;
-                L.marker([lat, lon], { icon }).addTo(this.globalMapInstance).bindPopup(popup);
+                L.marker([lat, lon], { icon }).bindPopup(popup).addTo(cluster);
             });
-            if (bounds.length) {
-                this.globalMapInstance.fitBounds(bounds, { padding: [40, 40], maxZoom: 10 });
-            }
+            cluster.addTo(this.globalMapInstance);
+            if (bounds.length) this.globalMapInstance.fitBounds(bounds, { padding: [40, 40], maxZoom: 10 });
             setTimeout(() => this.globalMapInstance && this.globalMapInstance.invalidateSize(), 300);
         });
     }
