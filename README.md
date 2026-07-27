@@ -1,4 +1,4 @@
-# c4c6/users-map-location-osm
+Flarum Users map location - Open Street Map
 
 Fork de justoverclock/users-map-location remplaçant Mapbox par OpenStreetMap.
 Aucune clé API requise.
