@@ -4,23 +4,33 @@ import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
 
 function loadLeaflet() {
     return new Promise((resolve) => {
-        if (window.L) { resolve(); return; }
+        if (window.L?.markerClusterGroup) { resolve(); return; }
+
         if (!document.getElementById('leaflet-css')) {
             const link = document.createElement('link');
             link.id = 'leaflet-css'; link.rel = 'stylesheet';
             link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
             document.head.appendChild(link);
         }
-        if (document.getElementById('leaflet-js')) {
-            if (window.L) resolve();
-            else document.getElementById('leaflet-js').addEventListener('load', resolve);
-            return;
+
+        if (!document.getElementById('leaflet-cluster-css')) {
+            const link = document.createElement('link');
+            link.id = 'leaflet-cluster-css'; link.rel = 'stylesheet';
+            link.href = 'https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css';
+            document.head.appendChild(link);
         }
-        const script = document.createElement('script');
-        script.id = 'leaflet-js';
-        script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-        script.onload = resolve;
-        document.head.appendChild(script);
+
+        const loadScript = (id, src) => new Promise((res) => {
+            if (document.getElementById(id)) { res(); return; }
+            const script = document.createElement('script');
+            script.id = id; script.src = src;
+            script.onload = res;
+            document.head.appendChild(script);
+        });
+
+        loadScript('leaflet-js', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js')
+            .then(() => loadScript('leaflet-cluster-js', 'https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js'))
+            .then(resolve);
     });
 }
 
@@ -42,13 +52,12 @@ export default class StandaloneMapPage extends Page {
         }).catch(() => { this.loading = false; m.redraw(); });
     }
 
-
     view() {
         const fullWidth = app.forum.attribute('waazdakkamap.fullWidth') === true;
         const mapHeight = app.forum.attribute('waazdakkamap.mapHeight') || 500;
         return (
             <div className={`StandaloneMapPage${fullWidth ? ' StandaloneMapPage--full' : ''}`}>
-		<div className="StandaloneMapPage-header container">
+                <div className="StandaloneMapPage-header container">
                     <h2><i className="fas fa-map-marked-alt" /> Carte des membres</h2>
                     {!this.loading && (
                         <p className="helpText">
@@ -77,11 +86,12 @@ export default class StandaloneMapPage extends Page {
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                 maxZoom: 19,
-		referrerPolicy: 'strict-origin-when-cross-origin',
+                referrerPolicy: 'strict-origin-when-cross-origin',
             }).addTo(this.mapInstance);
 
             const iconUrl = app.forum.attribute('baseUrl') + '/assets/extensions/waazdakka-users-map-location-osm/marker-icon.png';
             const icon = L.icon({ iconUrl, iconSize: [28, 45], iconAnchor: [14, 45] });
+            const cluster = L.markerClusterGroup();
             const bounds = [];
 
             this.users.forEach(user => {
@@ -92,9 +102,10 @@ export default class StandaloneMapPage extends Page {
                     <strong><a href="${app.forum.attribute('baseUrl')}/u/${user.username}">${user.name}</a></strong><br/>
                     <small>${user.location}</small>
                 </div>`;
-                L.marker([lat, lon], { icon }).addTo(this.mapInstance).bindPopup(popup);
+                L.marker([lat, lon], { icon }).bindPopup(popup).addTo(cluster);
             });
 
+            cluster.addTo(this.mapInstance);
             if (bounds.length) this.mapInstance.fitBounds(bounds, { padding: [40, 40], maxZoom: 10 });
             setTimeout(() => this.mapInstance && this.mapInstance.invalidateSize(), 300);
         });
