@@ -1,8 +1,8 @@
 <?php
-namespace C4c6\UsersMapLocationOsm;
-use C4c6\UsersMapLocationOsm\Listeners\SaveLocationToDatabase;
-use C4c6\UsersMapLocationOsm\Listeners\AddLocationAttribute;
-use C4c6\UsersMapLocationOsm\Api\ListMapUsersController;
+namespace Waazdakka\UsersMapLocationOsm;
+use Waazdakka\UsersMapLocationOsm\Listeners\SaveLocationToDatabase;
+use Waazdakka\UsersMapLocationOsm\Listeners\AddLocationAttribute;
+use Waazdakka\UsersMapLocationOsm\Api\ListMapUsersController;
 use Flarum\Api\Serializer\UserSerializer;
 use Flarum\Extend;
 use Flarum\User\Event\Saving;
@@ -22,7 +22,7 @@ return [
     (new Extend\Routes('api'))
         ->get('/map-users', 'map-users.index', ListMapUsersController::class),
     (new Extend\Settings())
-        ->serializeToForum('c4c6map.mapHeight', 'c4c6-map-height', 'strval', '500')
-        ->serializeToForum('c4c6map.fullWidth', 'c4c6-map-full-width', 'boolval', false)
-        ->serializeToForum('c4c6map.useMasquerade', 'c4c6-map-use-masquerade', 'boolval', true),
+        ->serializeToForum('waazdakkamap.mapHeight', 'waazdakka-map-height', 'strval', '500')
+        ->serializeToForum('waazdakkamap.fullWidth', 'waazdakka-map-full-width', 'boolval', false)
+        ->serializeToForum('waazdakkamap.useMasquerade', 'waazdakka-map-use-masquerade', 'boolval', true),
 ];

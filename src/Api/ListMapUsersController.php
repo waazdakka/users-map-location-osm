@@ -1,5 +1,5 @@
 <?php
-namespace C4c6\UsersMapLocationOsm\Api;
+namespace Waazdakka\UsersMapLocationOsm\Api;
 use Illuminate\Database\Capsule\Manager as DB;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;

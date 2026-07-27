@@ -6,7 +6,7 @@ import SettingsPage from 'flarum/forum/components/SettingsPage';
 import LocationSettings from './components/LocationSettings';
 import StandaloneMapPage from './components/StandaloneMapPage';
 
-app.initializers.add('c4c6/users-map-location-osm', () => {
+app.initializers.add('waazdakka/users-map-location-osm', () => {
     User.prototype.location = Model.attribute('location');
     User.prototype.mapLat   = Model.attribute('mapLat');
     User.prototype.mapLon   = Model.attribute('mapLon');
@@ -22,7 +22,7 @@ app.initializers.add('c4c6/users-map-location-osm', () => {
         const { ProfileConfigurePane } = masquerade.panes;
         extend(ProfileConfigurePane.prototype, 'view', function (vnode) {
             // Lire le setting au moment du rendu, pas au boot
-            if (app.forum.attribute('c4c6map.useMasquerade') !== false) {
+            if (app.forum.attribute('waazdakkamap.useMasquerade') !== false) {
                 vnode.children.push(<LocationSettings user={this.attrs.user} />);
             }
         });
@@ -30,7 +30,7 @@ app.initializers.add('c4c6/users-map-location-osm', () => {
 
     // Toujours enregistrer le fallback Settings aussi
     extend(SettingsPage.prototype, 'settingsItems', function (items) {
-        if (!flarum.extensions['fof-masquerade'] || app.forum.attribute('c4c6map.useMasquerade') === false) {
+        if (!flarum.extensions['fof-masquerade'] || app.forum.attribute('waazdakkamap.useMasquerade') === false) {
             items.add('location', <LocationSettings />, 80);
         }
     });

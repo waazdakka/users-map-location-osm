@@ -1,6 +1,6 @@
 <?php
 
-namespace C4c6\UsersMapLocationOsm\Listeners;
+namespace Waazdakka\UsersMapLocationOsm\Listeners;
 
 use Flarum\Api\Serializer\UserSerializer;
 use Flarum\User\User;

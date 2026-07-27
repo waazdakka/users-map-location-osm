@@ -1,5 +1,5 @@
 {
-    "name": "c4c6/users-map-location-osm",
+    "name": "waazdakka/users-map-location-osm",
     "description": "Display users location on OpenStreetMap. Fork of justoverclock/users-map-location.",
     "type": "flarum-extension",
     "license": "MIT",
@@ -8,7 +8,7 @@
     },
     "autoload": {
         "psr-4": {
-            "C4c6\\UsersMapLocationOsm\\": "src/"
+            "Waazdakka\\UsersMapLocationOsm\\": "src/"
         }
     },
     "extra": {
