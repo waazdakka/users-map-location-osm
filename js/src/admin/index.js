@@ -1,7 +1,7 @@
 import app from 'flarum/admin/app';
 
 app.initializers.add('waazdakka/users-map-location-osm', () => {
-    app.extensionData
+    app.registry
         .for('waazdakka-users-map-location-osm')
         .registerSetting({
             setting: 'waazdakka-map-height',
