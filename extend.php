@@ -1,9 +1,9 @@
 <?php
 namespace Waazdakka\UsersMapLocationOsm;
 use Waazdakka\UsersMapLocationOsm\Listeners\SaveLocationToDatabase;
-use Waazdakka\UsersMapLocationOsm\Listeners\AddLocationAttribute;
 use Waazdakka\UsersMapLocationOsm\Api\ListMapUsersController;
-use Flarum\Api\Serializer\UserSerializer;
+use Waazdakka\UsersMapLocationOsm\Api\UserResourceFields;
+use Flarum\Api\Resource\UserResource;
 use Flarum\Extend;
 use Flarum\User\Event\Saving;
 return [
@@ -17,8 +17,8 @@ return [
     new Extend\Locales(__DIR__.'/locale'),
     (new Extend\Event())
         ->listen(Saving::class, SaveLocationToDatabase::class),
-    (new Extend\ApiSerializer(UserSerializer::class))
-        ->attributes(AddLocationAttribute::class),
+    (new Extend\ApiResource(UserResource::class))
+        ->fields(UserResourceFields::class),
     (new Extend\Routes('api'))
         ->get('/map-users', 'map-users.index', ListMapUsersController::class),
     (new Extend\Settings())
